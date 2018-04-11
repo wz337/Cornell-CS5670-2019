@@ -4,8 +4,9 @@ import math
 from scipy.misc import imread
 
 from util import preprocess_ncc, compute_ncc, project, unproject_corners, \
-    pyrdown, pyrup, compute_photometric_stereo
+    pyrdown, pyrup, compute_photometric_stereo,form_poisson_equation
 
+from scipy.sparse.linalg import lsqr
 
 def skip_not_implemented(func):
     from nose.plugins.skip import SkipTest
@@ -31,7 +32,6 @@ def preprocess_ncc_zeros_test():
                        1, 3 * ncc_size * ncc_size)
     assert (np.abs(n) < 1e-6).all()
 
-
 @skip_not_implemented
 def preprocess_ncc_delta_test():
     ncc_size = 5
@@ -54,10 +54,13 @@ def preprocess_ncc_delta_test():
                     2 * 1 + ncc_size * i + j] = x
             correct[-(i + ncc_half + 1), -(j + ncc_half + 1), ncc_size **
                     2 * 2 + ncc_size * i + j] = x
+    # np.set_printoptions(threshold=np.nan)
+    # print(n[np.nonzero(n)]-correct[np.nonzero(correct)])
 
     assert n.shape == (2 * ncc_size - 1, 2 * ncc_size -
                        1, 3 * ncc_size * ncc_size)
     assert (np.abs(n - correct) < 1e-6).all()
+    # assert (abs==basd).all()
 
 
 @skip_not_implemented
@@ -750,17 +753,12 @@ def compute_photometric_stereo_angle_test():
     assert np.isclose(albedo[0, 0, 0],1)
     assert ((normals[0, 0, :] - (0, 0, 1)) < 1e-5).all()
 
-
 @skip_not_implemented
 def preprocess_ncc_full_test():
     ncc_size = 5
-
     image = imread('test_materials/fabrics.png')
-
     result = preprocess_ncc(image, ncc_size)
-
     correct = np.load('test_materials/fabrics_normalized.npy')
-
     assert (np.abs(result - correct) < 1e-5).all()
 
 
@@ -862,3 +860,89 @@ def pyrup_hybrid_test():
     correct = imread('test_materials/MonroeEnstein_AudeOliva2007_large.png')
 
     assert (np.abs(image - correct) / 255.0 < 1e-2).all()
+
+
+@skip_not_implemented
+def form_poisson_equation_test_depth_x():
+    height = 2
+    width = 2
+    alpha = np.ones((height,width))
+    depth = np.ones((height,width))
+    depth[:,1] = 2
+    normals = np.zeros((height,width,3))
+    normals[:,:,2] = 1
+    depth_weight = 1
+    A,b = form_poisson_equation(height, width, alpha, None, depth_weight, depth)
+    solution = lsqr(A, b)
+    assert np.allclose(solution[0],np.array([1,2,1,2]))
+
+@skip_not_implemented
+def form_poisson_equation_test_normal_x():
+    height = 2
+    width = 2
+    alpha = np.ones((height,width))
+    depth = np.ones((height,width))
+    depth[:,1] = 2
+    normals = np.zeros((height,width,3))
+    normals[:,:,::2] = 1/np.sqrt(2)
+    depth_weight = 0.01
+    A,b = form_poisson_equation(height, width, alpha, normals, depth_weight,depth)
+    solution = lsqr(A, b)
+    assert np.allclose(solution[0],np.array([1,2,1,2]))
+
+@skip_not_implemented
+def form_poisson_equation_test_both_x():
+    height = 2
+    width = 2
+    alpha = np.ones((height,width))
+    depth = np.ones((height,width))
+    depth[:,1] = 2
+    normals = np.zeros((height,width,3))
+    normals[:,:,::2] = 1/np.sqrt(2)
+    depth_weight = 1
+    A,b = form_poisson_equation(height, width, alpha, normals, depth_weight,depth)
+    solution = lsqr(A, b)
+    assert np.allclose(solution[0],np.array([1,2,1,2]))
+
+
+@skip_not_implemented
+def form_poisson_equation_test_depth_y():
+    height = 2
+    width = 2
+    alpha = np.ones((height,width))
+    depth = np.ones((height,width))
+    depth[0,:] = 2
+    normals = np.zeros((height,width,3))
+    normals[:,:,1:] = 1
+    depth_weight = 1
+    A,b = form_poisson_equation(height, width, alpha, None, depth_weight, depth)
+    solution = lsqr(A, b)
+    assert np.allclose(solution[0],np.array([2,2,1,1]))
+
+@skip_not_implemented
+def form_poisson_equation_test_normal_y():
+    height = 2
+    width = 2
+    alpha = np.ones((height,width))
+    depth = np.ones((height,width))
+    depth[0,:] = 2
+    normals = np.zeros((height,width,3))
+    normals[:,:,1:] = 1/np.sqrt(2)
+    depth_weight = 0.01
+    A,b = form_poisson_equation(height, width, alpha, normals, depth_weight,depth)
+    solution = lsqr(A, b)
+    assert np.allclose(solution[0],np.array([2,2,1,1]))
+
+@skip_not_implemented
+def form_poisson_equation_test_both_y():
+    height = 2
+    width = 2
+    alpha = np.ones((height,width))
+    depth = np.ones((height,width))
+    depth[0,:] = 2
+    normals = np.zeros((height,width,3))
+    normals[:,:,1:] = 1/np.sqrt(2)
+    depth_weight = 1
+    A,b = form_poisson_equation(height, width, alpha, normals, depth_weight,depth)
+    solution = lsqr(A, b)
+    assert np.allclose(solution[0],np.array([2,2,1,1]))
