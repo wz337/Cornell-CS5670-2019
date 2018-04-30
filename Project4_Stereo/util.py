@@ -26,7 +26,7 @@ def form_poisson_equation(height, width, alpha, normals, depth_weight, depth):
 
 
 def compute_photometric_stereo(lights, images):
-    return compute_photometric_stereo_impl(lights, images)
+    return compute_photometric_stereo_impl(lights.T, images)
 
 
 def project(K, Rt, points):
