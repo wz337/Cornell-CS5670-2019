@@ -404,7 +404,7 @@ if __name__ == '__main__':
             'the hybrid image.', default=None)
     args = parser.parse_args()
     root = tk.Tk()
-    root.title('Cornell CS 4670 - Hybrid Images Project')
+    root.title('Cornell CS 5670 - Hybrid Images Project')
     w, h = root.winfo_screenwidth(), root.winfo_screenheight() - 50
     root.geometry('{}x{}+0+0'.format(w, h))
     root.grid_columnconfigure(0, weight=1)
