@@ -69,7 +69,7 @@ class ImageAlignmentFrame(uiutils.BaseFrame):
         self.right_redo_queue = []
         self.grid_rowconfigure(2, weight=1)
         self.image_receiver = None
-		
+
         self.template_file = template_file
 
     def  process_template(self):
@@ -83,7 +83,7 @@ class ImageAlignmentFrame(uiutils.BaseFrame):
                 self.after(0, load_template_and_compute)
 
             threading.Thread(target=load_template_local).start()
-			
+
     def load_first(self, img_name=None):
         img_name, img = self.ask_for_image(img_name)
         if img is not None:
