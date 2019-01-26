@@ -209,8 +209,9 @@ class ClickableImageWidget(ImageWidget):
         img_y_offset, img_x_offset = self.coordinates_of_top_left()
         original_height, original_width = self.raw_image.shape[:2]
         drawn_height, drawn_width = self.drawn_image_dim
-        clicked_y = float(original_height) * (y - img_y_offset) / drawn_height
-        clicked_x = float(original_width) * (x - img_x_offset) / drawn_width
+        # prevent divide-by-zero error
+        clicked_y = float(original_height) * (y - img_y_offset) / (drawn_height + 1e-16)
+        clicked_x = float(original_width) * (x - img_x_offset) / (drawn_width + 1e-16)
         return (clicked_y, clicked_x)
 
     def image_to_canvas_coordinates(self, y, x):

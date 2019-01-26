@@ -69,10 +69,13 @@ class ImageAlignmentFrame(uiutils.BaseFrame):
         self.right_redo_queue = []
         self.grid_rowconfigure(2, weight=1)
         self.image_receiver = None
-        if template_file is not None:
+		
+        self.template_file = template_file
 
+    def  process_template(self):
+        if self.template_file is not None:
             def load_template_and_compute():
-                self.load_corr(template_file)
+                self.load_corr(self.template_file)
                 self.process_compute()
 
             def load_template_local():
@@ -80,7 +83,7 @@ class ImageAlignmentFrame(uiutils.BaseFrame):
                 self.after(0, load_template_and_compute)
 
             threading.Thread(target=load_template_local).start()
-
+			
     def load_first(self, img_name=None):
         img_name, img = self.ask_for_image(img_name)
         if img is not None:
@@ -393,6 +396,8 @@ class HybridImagesUIFrame(tk.Frame):
                 config_file)
         notebook.add(hybrid_frame, text='View Hybrid')
         notebook.tab(1, state=tk.DISABLED) # Will be enabled after alignment
+        # prevent  conflict between  threads on windows
+        alignment_frame.process_template()
 
 
 if __name__ == '__main__':
