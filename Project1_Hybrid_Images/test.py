@@ -309,7 +309,7 @@ class TestHighLowPass(unittest.TestCase):
                   [ 0.30309852,  0.73129418,  0.23706999]]])
 
         self.assertTrue(np.allclose(hybrid.high_pass(self.img1, 2, 3), r, rtol=1e-4, atol=1e-08)
-            or np.allclose(hybrid.high_pass(self.img1, 2, 3), r_alternate, rtoal=1e-4, atol=1e-08))
+            or np.allclose(hybrid.high_pass(self.img1, 2, 3), r_alternate, rtol=1e-4, atol=1e-08))
 
     def test_low_pass_9_7(self):
         r = np.array([[[ 0.17963478,  0.17124501,  0.12221388],
