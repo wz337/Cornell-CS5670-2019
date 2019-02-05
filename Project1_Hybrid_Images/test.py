@@ -190,8 +190,8 @@ class TestGaussianKernel2D(unittest.TestCase):
                          [0.03995566, 0.0424179,  0.04327192, 0.0424179,  0.03995566],
                          [0.03916709, 0.04158074, 0.0424179,  0.04158074, 0.03916709],
                          [0.03689354, 0.03916709, 0.03995566, 0.03916709, 0.03689354]])
-        self.assertTrue(np.allclose(hybrid.gaussian_blur_kernel_2d(5, 5, 5), a, atol=1e-08) 
-            or np.allclose(hybrid.gaussian_blur_kernel_2d(5, 5, 5), a_alternate, atol=1e-08))
+        self.assertTrue(np.allclose(hybrid.gaussian_blur_kernel_2d(5, 5, 5), a, rtol=1e-4, atol=1e-08) 
+            or np.allclose(hybrid.gaussian_blur_kernel_2d(5, 5, 5), a_alternate, rtol=1e-4, atol=1e-08))
 
     def test_1_7_3(self):
         a = np.array([[ 0.00121496,  0.00200313,  0.00121496],
@@ -210,8 +210,8 @@ class TestGaussianKernel2D(unittest.TestCase):
             [0.0674766,  0.10688965, 0.0674766 ],
             [0.01691519, 0.02679535, 0.01691519],
             [0.00166843, 0.00264296, 0.00166843]])
-        self.assertTrue(np.allclose(hybrid.gaussian_blur_kernel_2d(1, 7, 3), a, atol=1e-08)
-            or np.allclose(hybrid.gaussian_blur_kernel_2d(1, 7, 3), a_alternate, atol=1e-08))
+        self.assertTrue(np.allclose(hybrid.gaussian_blur_kernel_2d(1, 7, 3), a, rtol=1e-4, atol=1e-08)
+            or np.allclose(hybrid.gaussian_blur_kernel_2d(1, 7, 3), a_alternate, rtol=1e-4, atol=1e-08))
 
     def test_1079_3_5(self):
         a = np.array([[ 0.06600011,  0.06685595,  0.06714369,  0.06685595,  0.06600011],
@@ -222,8 +222,8 @@ class TestGaussianKernel2D(unittest.TestCase):
         a_alternate = np.array([[0.06600058, 0.06685582, 0.06714335, 0.06685582, 0.06600058],
              [0.06628444, 0.06714335, 0.06743212, 0.06714335, 0.06628444],
              [0.06600058, 0.06685582, 0.06714335, 0.06685582, 0.06600058]])
-        self.assertTrue(np.allclose(hybrid.gaussian_blur_kernel_2d(10.79, 3, 5), a, atol=1e-08)
-            or np.allclose(hybrid.gaussian_blur_kernel_2d(10.79, 3, 5), a_alternate, atol=1e-08))
+        self.assertTrue(np.allclose(hybrid.gaussian_blur_kernel_2d(10.79, 3, 5), a, rtol=1e-4, atol=1e-08)
+            or np.allclose(hybrid.gaussian_blur_kernel_2d(10.79, 3, 5), a_alternate, rtol=1e-4, atol=1e-08))
 
 class TestHighLowPass(unittest.TestCase):
 
@@ -283,8 +283,8 @@ class TestHighLowPass(unittest.TestCase):
           [0.34211247, 0.35650942, 0.56218549],
           [0.23353816, 0.36085143, 0.46528782],
           [0.14011613, 0.23858205, 0.29034499]]])
-        self.assertTrue(np.allclose(hybrid.low_pass(self.img1, 2, 3), r, atol=1e-08)
-            or np.allclose(hybrid.low_pass(self.img1, 2, 3), r_alternate, atol=1e-08))
+        self.assertTrue(np.allclose(hybrid.low_pass(self.img1, 2, 3), r, rtol=1e-4, atol=1e-08)
+            or np.allclose(hybrid.low_pass(self.img1, 2, 3), r_alternate, rtol=1e-4, atol=1e-08))
 
     def test_high_pass_2_3(self):
         r = np.array([[[ 0.67840929,  0.42564602,  0.56367731],
@@ -308,8 +308,8 @@ class TestHighLowPass(unittest.TestCase):
                   [ 0.14721724, -0.30164113,  0.30726631],
                   [ 0.30309852,  0.73129418,  0.23706999]]])
 
-        self.assertTrue(np.allclose(hybrid.high_pass(self.img1, 2, 3), r, atol=1e-08)
-            or np.allclose(hybrid.high_pass(self.img1, 2, 3), r_alternate, atol=1e-08))
+        self.assertTrue(np.allclose(hybrid.high_pass(self.img1, 2, 3), r, rtol=1e-4, atol=1e-08)
+            or np.allclose(hybrid.high_pass(self.img1, 2, 3), r_alternate, rtoal=1e-4, atol=1e-08))
 
     def test_low_pass_9_7(self):
         r = np.array([[[ 0.17963478,  0.17124501,  0.12221388],
@@ -361,8 +361,8 @@ class TestHighLowPass(unittest.TestCase):
               [0.21927869, 0.20690345, 0.16274041],
               [0.18693941, 0.17054435, 0.13759465]]])
 
-        self.assertTrue(np.allclose(hybrid.low_pass(self.img2, 9, 7), r, atol=1e-08)
-            or np.allclose(hybrid.low_pass(self.img2, 9, 7), r_alternate, atol=1e-08))
+        self.assertTrue(np.allclose(hybrid.low_pass(self.img2, 9, 7), r, rtol=1e-4, atol=1e-08)
+            or np.allclose(hybrid.low_pass(self.img2, 9, 7), r_alternate, rtol=1e-4, atol=1e-08))
 
     def test_high_pass_9_7(self):
         r = np.array([[[ 0.2862107 , -0.04295958,  0.29505309],
@@ -414,8 +414,8 @@ class TestHighLowPass(unittest.TestCase):
               [ 0.39822248, -0.00237734,  0.53796371],
               [ 0.14244353,  0.4504209,   0.3658293 ]]])
 
-        self.assertTrue(np.allclose(hybrid.high_pass(self.img2, 9, 7), r, atol=1e-08)
-            or np.allclose(hybrid.high_pass(self.img2, 9, 7), r_alternate, atol=1e-08))
+        self.assertTrue(np.allclose(hybrid.high_pass(self.img2, 9, 7), r, rtol=1e-4, atol=1e-08)
+            or np.allclose(hybrid.high_pass(self.img2, 9, 7), r_alternate, rtol=1e-4, atol=1e-08))
 
 
 if __name__ == '__main__':
