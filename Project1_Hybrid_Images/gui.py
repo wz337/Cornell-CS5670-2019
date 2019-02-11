@@ -283,14 +283,27 @@ class HybridImageFrame(uiutils.BaseFrame):
         tk.Checkbutton(self, text='View Result in Grayscale', variable=self.view_grayscale).grid(row=3, column=2, sticky=tk.E)
         self.view_grayscale.trace('w', self.change_view_color_space)
 
+        tk.Label(self,
+                 text='Scale factor (1=left, 5=right):').grid(row=4,
+                                                              column=0,
+                                                              sticky=tk.E)
+        self.scale_slider = tk.Scale(self,
+                                     from_=1.0,
+                                     to=5.0,
+                                     resolution=0.2,
+                                     orient=tk.HORIZONTAL)
+        self.scale_slider.grid(row=4, column=1, sticky=tk.E + tk.W)
+        self.scale_slider.set(2.0)
+        self.scale_slider.bind('<ButtonRelease-1>', self.update_hybrid)
+
         tk.Button(self,
                   text='Save Configuration',
-                  command=self.save_conf).grid(row=4,
+                  command=self.save_conf).grid(row=5,
                                                column=0,
                                                sticky=tk.W + tk.E)
         tk.Button(self,
                   text='Load Configuration',
-                  command=self.load_conf).grid(row=4,
+                  command=self.load_conf).grid(row=5,
                                                column=1,
                                                sticky=tk.W + tk.E)
         self.save_grayscale = tk.IntVar()
@@ -303,8 +316,8 @@ class HybridImageFrame(uiutils.BaseFrame):
                                                sticky=tk.W + tk.E)
 
         self.image_widget = uiutils.ImageWidget(self)
-        self.image_widget.grid(row=5, column=0, columnspan=4, sticky=tk.NSEW)
-        self.grid_rowconfigure(5, weight=1)
+        self.image_widget.grid(row=6, column=0, columnspan=4, sticky=tk.NSEW)
+        self.grid_rowconfigure(6, weight=1)
         self.left_image = None
         self.right_image = None
         self.tab_num = tab_num
@@ -333,7 +346,7 @@ class HybridImageFrame(uiutils.BaseFrame):
                 self.left_sigma_slider.get(), left_kernel_size,
                 self.left_high_low_indicator.get(),
                 self.right_sigma_slider.get(), right_kernel_size,
-                self.right_high_low_indicator.get(), self.mixin_slider.get())
+                self.right_high_low_indicator.get(), self.mixin_slider.get(), self.scale_slider.get())
             self.image_widget.draw_cv_image(hybrid_image)
 
     def change_view_color_space(self, *args):
@@ -341,7 +354,7 @@ class HybridImageFrame(uiutils.BaseFrame):
 
     def load_conf(self, filename=None):
         if filename is None:
-            filename = tkFileDialog.askopenfile(parent=self,
+            filename = tkFileDialog.askopenfilename(parent=self,
                     filetypes=[('JSON file', '*.json')])
         if filename is not None:
             with open(filename, 'r') as infile:
@@ -353,6 +366,7 @@ class HybridImageFrame(uiutils.BaseFrame):
                 self.right_size_slider.set(conf['right_size'])
                 self.right_high_low_indicator.set(conf['right_mode'].lower())
                 self.mixin_slider.set(conf['mixin_ratio'])
+                self.scale_slider.set(conf['scale_factor'])
                 self.view_grayscale.set(conf['view_grayscale'])
                 self.save_grayscale.set(conf['save_grayscale'])
                 self.set_status('Loaded config from ' + filename)
@@ -371,6 +385,7 @@ class HybridImageFrame(uiutils.BaseFrame):
             conf['right_size'] = self.right_size_slider.get()
             conf['right_mode'] = self.right_high_low_indicator.get()
             conf['mixin_ratio'] = self.mixin_slider.get()
+            conf['scale_factor'] = self.scale_slider.get()
             conf['view_grayscale'] = self.view_grayscale.get()
             conf['save_grayscale'] = self.save_grayscale.get()
             with open(filename, 'w') as outfile:
